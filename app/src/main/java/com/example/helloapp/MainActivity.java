@@ -2,6 +2,8 @@ package com.example.helloapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,44 +11,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.helloapp.databinding.ActivityMainBinding;
+import com.example.helloapp.viewmodel.MyViewModel;
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView textView;
-    Button buttonL,buttonR;
-
     private static String LOG_TAG="mylog";
-
+    MyViewModel myViewModel;
+    ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG,"onCreate...");
-        setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.textView);
-        buttonL = findViewById(R.id.button);
-        buttonR = findViewById(R.id.button2);
-
-        if (savedInstanceState!=null){
-            String butStr = savedInstanceState.getString("butStr");
-            if (butStr!=null){
-                textView.setText(butStr);
-            }
-        }else{
-            textView.setText("hello world");
-        }
-
-        buttonL.setOnClickListener(v->{
-            textView.setText("←");
-        });
-
-        buttonR.setOnClickListener(v -> {
-            textView.setText("→");
-        });
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        //viewModel 获取方式随着api更新做出调整
+        myViewModel = new ViewModelProvider(
+                this,
+                ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())
+        ).get(MyViewModel.class);
+        binding.setVm(myViewModel);
+        binding.setLifecycleOwner(this);
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("butStr",textView.getText().toString());
-
-    }
 }
