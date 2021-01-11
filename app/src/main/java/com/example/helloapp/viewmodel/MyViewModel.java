@@ -15,7 +15,7 @@ public class MyViewModel extends ViewModel {
         return number;
     }
 
-    public void add(){
-        number.setValue(number.getValue()+1);
+    public void add(Integer i){
+        number.setValue(number.getValue()+i);
     }
 }
